@@ -1,0 +1,2 @@
+#!/bin/bash
+javac player/GameBoard.java && java player.GameBoard

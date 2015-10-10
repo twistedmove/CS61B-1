@@ -1,0 +1,200 @@
+                                     GRADER
+
+Name of student running submit: Hansong Zhang
+Login of student running submit: cs61b-px
+
+Second team member's name: Jiahui Huang
+Second team member's login: cs61b-jp
+
+Third team member's name (if any): Meihua Luo
+Third team member's login: cs61b-im
+
+IMPORTANT:  Once you've submitted Project 2 once, the same team member should
+submit always.  If a different teammate must submit, inform cs61b@cory.eecs of
+all the details.  Include a complete list of team members, and let us know
+which submission you want graded.
+
+If you've submitted your project once, or even written a substantial amount of
+code together, you may not change partners without the permission of the
+instructor.
+===============================================================================
+Does your program compile without errors?
+
+    true
+
+Have you tested your program on the 61B lab machines?
+
+    true
+
+Did you successfully implement game tree search?  Did you successfully
+implement alpha-beta pruning?  Are there any limitations on it?  What is the
+default number of search levels set by the one-parameter MachinePlayer
+constructor (or is it a variable-depth search)?
+
+
+Describe your board evaluation function in some detail.
+
+    If the black player already has a win, return the highest score;
+    if the white player already has a win, return the lowest score.
+    For the black player, the score will be higher with 
+      - more connections of black chips
+      - longer connections of black chips
+      - already has chip[s] in goal areas
+      - has less extraneous chips in goal areas
+    For the white player, the score will be higher with 
+      - more connections of white chips
+      - longer connections of white chips
+      - already has chip[s] in goal areas
+      - has less extraneous chips in goal areas
+
+Does your MachinePlayer use any special method of choosing the first few moves?
+
+    It will first consider goal areas.
+
+
+Is there anything else the graders should know to help them read your project?
+    
+    false
+
+
+Describe the classes, modules, and interfaces you designed before and while you
+implemented the project.  Your description should include:
+  -  A list of the classes your program uses.
+  -  A list of each of the "modules" used in or by MachinePlayer, similar to
+     the list in the "Teamwork" section of the README (but hopefully more
+     detailed).  (If you're using a list class, that should probably count as
+     a separate module.)
+  -  For each module, list the class(es) the module is implemented in.
+  -  For each module, say which of your team members implemented it.
+  -  For each module, describe its interface--specifically, the prototype and
+     behavior of each method that is available for external callers (outside
+     the module) to call.  Don't include methods that are only meant to be
+     called from within the module.
+
+     For each method, provide (1) a method prototype and (2) a complete,
+     unambiguous description of the behavior of the method/module.  This
+     description should also appear before the method in your code's comments.
+
+You will probably need to change some of your design decisions as you go; be
+sure to modify this file to reflect these changes before you submit your
+project.  Your design of classes and interfaces will be worth 10% of your
+grade.
+
+>>>     A list of the classes
+
+        - GameBoard —> Stores all data (chips) for a game board.
+          * Uses a 2-D array as a board for the game. board is PRIVATE!
+            (This array is NOT an interface, so we don't provide info)
+          * For each grid on board, either BLACK, WHITE, NOCHIP, INVALID.
+          * Interfaces:
+            ^ public int[][] blackCihps()
+              returns all black chips by an 2-D array like:
+                { {x1, y1}, {x2, y2}, ... }
+            ^ public int[][] whiteChips()
+              returns all white chips by an 2-D array like:
+                { {x1, y1}, {x2, y2}, ... }
+            ^ public int chip(int x, int y)
+              returns the chip on (x, y). can be BLACK, WHITE, NOCHIP, or
+              INVALID.
+            ^ public int getBlackNum()
+              returns number of black chips
+            ^ public int getWhiteNum()
+              returns number of white chips
+            ^ public void add(int x, int y, int color)
+              This method will:
+                1) add the chip on (x, y) for board.
+                2) receive the data from MachinePlayer.forceMove
+              This method will NOT check validity.
+            ^ public void move(int xx1, int yy1, int xx2, yy2)
+              This method will:
+                1) move the chip on (xx2, yy2) to (xx1, yy1) for board.
+                2) receive the data from MachinePlayer.forceMove
+              This method will NOT check validity.
+            ^ public String toString()
+              This method takes a board into a String.
+            ^ public boolean isValid(Move m, int color)
+              This method returns whether it is valid of Move m with the
+              given (this) GameBoard and color.
+            ^ public Move[] totalMoves(int color)
+              This method returns all valid Move[s] for color.
+              This returns an array of Move.
+            ^ public SList connectionChip(int x, int y)
+              This method returns all existing connections for the chip in (x, y).
+            ^ public int anyNetwork()
+              This method returns
+                0 if No one already has Network (wins).
+                1 if black has Network.
+                2 if white has Network.
+
+        - Move -> This is already given. This means a standard format of
+                  each move.
+
+        - Player -> This is already given.
+
+        - MachinePlayer —> Our machine player, which generates computer moves.
+          * By the constructor with one parameter, gives a MachinePlayer
+            which knows its color.
+          * By the constructor with two parameters, gives a MachinePlayer
+            which knows its color and limits maxium depth.
+          * When constructed, MachinePlayer constructs a new GameBoard object
+            which this stores and reads all data about current situation that
+            Machine Player requires.
+          * Interfaces:
+            ^ public Move minimax(GameBoard board, int depth)
+              This method returns a Move by minimax algorithm.
+            ^ puublic Move chooseMove()
+              This will send a Move data.
+            ^ public boolean forceMove(Move m)
+              This will record a Move to its GameBoard "database"
+            ^ public boolean opponentMove(Move m)
+              This will record an opponent Move to its GameBoard "database"
+
+
+
+ >>>    A list of modules:
+
+        - Determining whether a move is valid: we use method isValid in class
+          GameBoard.
+          ^ public boolean isValid(Move m)
+          ^ Behavior:
+              returns true if m is valid;
+              returns false if m is invalid.
+          @ Meihua
+
+        - Generating a list of all valid moves: we use method totalMoves in
+          class GameBoard.
+          ^ public Move[] totalMoves()
+          ^ Behavior:
+              returns an array of Move[s] which are all valid.
+          @ Jiahui
+
+        - Finding the chips (of the same color) that form connections with a
+          chip: we use method buildConnection in class GameBoard.
+          ^ public SList connectionChip
+          ^ Behavior:
+              returns a SList of all the connected chips for a given chip at (x, y)
+          @ Jiahui
+
+        - Determining whether a game board contains any networks for a given
+          player: we use method anyNetwork in class GameBoard.
+          ^ public int anyNetwork()
+          ^ Behavior:
+              returns 0 IF now, no one has a Network.
+              returns 1 IF now, black player has a Network.
+              returns 2 IF now, white player has a Network.
+          @ Hansong
+
+        - Computing an evaluation function for a board: we use method
+          evaluation in class Board.
+          ^ public int evaluation(GameBoard board, Move m)
+          ^ Behavior:
+              returns a "score" for a Move m given current board situation.
+          @ Meihua
+
+        - Performing minimax tree search: we use method minimax in class
+          Search.
+          ^ public Move minimax(GameBoard board, int depth)
+          ^ Behavior:
+              uses minimax to return an optimal Move.
+          @ Hansong
+
